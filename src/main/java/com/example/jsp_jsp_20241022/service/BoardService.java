@@ -19,9 +19,24 @@ public class BoardService {
     }
 
 
-    public List<Board> list() {
+    public List<Board> list(Integer page) {
 //        List<Board> list = mapper.selectAll();
 //        return list;
-        return mapper.selectAll();
+
+        Integer offset = (page - 1) * 10;
+        List<Board> list = mapper.selectAllPaging(offset);
+        return list;
+    }
+
+    public Board get(int id) {
+        return mapper.selectById(id);
+    }
+
+    public void remove(int id) {
+        mapper.deleteById(id);
+    }
+
+    public void update(Board b) {
+        mapper.editById(b);
     }
 }

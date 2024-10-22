@@ -9,5 +9,13 @@ CREATE TABLE board
     inserted DATETIME      NOT NULL DEFAULT NOW()
 );
 
-SELECT *
+DROP TABLE board;
+
+SELECT COUNT(*)
+FROM board;
+
+# 페이징 연습용 게시물 복붙
+INSERT INTO board
+    (title, content, writer)
+SELECT title, content, board.writer
 FROM board;
