@@ -2,6 +2,9 @@ package com.example.jsp_jsp_20241022.mapper;
 
 import com.example.jsp_jsp_20241022.dto.Board;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @org.apache.ibatis.annotations.Mapper
 public interface Mapper {
@@ -12,4 +15,11 @@ public interface Mapper {
                 VALUES (#{title}, #{content}, #{writer})
             """)
     int insert(Board board);
+
+    @Select("""
+            SELECT *
+            FROM board
+            ORDER BY id DESC
+            """)
+    List<Board> selectAll();
 }
