@@ -5,15 +5,9 @@
     <title>Title</title>
 </head>
 <body>
+
 <c:import url="/WEB-INF/fragment/navbar.jsp"/>
-<tr>
-    <td>${board.id}</td>
-    <td>
-        <a href="/board/view?id=${board.id}">
-            ${board.title}
-        </a>
-    </td>
-</tr>
+
 <h2>게시물 목록</h2>
 <table>
     <thead>
@@ -37,10 +31,13 @@
             <td>${board.inserted}</td>
         </tr>
     </c:forEach>
+
     </tbody>
 </table>
+
+<%--    pagination --%>
 <div>
-    <c:forEach begin="1" end="15" var="pageNumber">
+    <c:forEach begin="${pageInfo.leftPageNumber}" end="${pageInfo.rightPageNumber}" var="pageNumber">
         <a href="/board/list?page=${pageNumber}">${pageNumber}</a>
     </c:forEach>
 </div>

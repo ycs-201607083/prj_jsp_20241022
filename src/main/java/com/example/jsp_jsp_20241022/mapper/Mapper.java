@@ -17,13 +17,6 @@ public interface Mapper {
     int insert(Board board);
 
     @Select("""
-            SELECT *
-            FROM board
-            ORDER BY id DESC
-            """)
-    List<Board> selectAll();
-
-    @Select("""
                 SELECT *
                 FROM board
                 WHERE id = #{id}
@@ -43,6 +36,19 @@ public interface Mapper {
                         WHERE id = #{id}
             """)
     int editById(Board b);
+
+    @Select("""
+            SELECT *
+            FROM board
+            ORDER BY id DESC
+            """)
+    List<Board> selectAll();
+
+    @Select("""
+                SELECT COUNT(id)
+                FROM board
+            """)
+    Integer countAll();
 
     @Select("""
             SELECT *
