@@ -12,49 +12,40 @@
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
 </head>
 <body>
-<c:import url="/WEB-INF/fragment/navbar.jsp">
-    <c:param name="active" value="list"/>
-</c:import>
+<c:import url="/WEB-INF/fragment/navbar.jsp"/>
 
-<%--div.container>div.row>div.col--%>
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-12 col-md-9 col-lg-6">
-
-            <h2 class="my-3">새 게시물 작성</h2>
-
-            <%--            bootstrap 사용 --%>
+        <div class="col-12 col-md9 col-lg-6">
+            <h2 class="my-3">
+                회원가입
+            </h2>
             <form method="post">
-                <%--                div.mb-3>label.form-label+input.form-control--%>
+                <%--id, password, nickName, description--%>
                 <div class="mb-3">
-                    <label for="inputTitle1" class="form-label">
-                        제목
-                    </label>
-                    <input id="inputTitle1" name="title" type="text" class="form-control">
+                    <label for="inputId1" class="form-label">아이디</label>
+                    <input type="text" class="form-control" id="inputId1" name="id">
                 </div>
-
-                <%--                div.mb-3>label.form-label+textarea.form-control--%>
                 <div class="mb-3">
-                    <label for="textareaContent1" class="form-label">본문</label>
-                    <textarea name="content" id="textareaContent1" rows="10" class="form-control"></textarea>
+                    <label for="inputPassword1" class="form-label">암호</label>
+                    <input type="text" class="form-control" id="inputPassword1" name="password">
                 </div>
-
-                <%--                div.mb-3>label.form-label+input.form-control--%>
                 <div class="mb-3">
-                    <label for="inputWriter1" class="form-label">작성자</label>
-                    <input id="inputWriter1" name="writer" type="text" class="form-control">
+                    <label for="inputNickName1" class="form-label">닉네임</label>
+                    <input type="text" class="form-control" id="inputNickName1" name="nickName">
                 </div>
-
+                <div class="mb-3">
+                    <label for="textareaDescription1" class="form-label">자기소개</label>
+                    <textarea type="text" class="form-control" id="textareaDescription1" rows="10"
+                              cols="10" name="description"></textarea>
+                </div>
                 <div class="mb-3">
                     <button class="btn btn-primary">
-                        <i class="fa-regular fa-floppy-disk"></i>
-                        저장
+                        <i class="fa-solid fa-user-plus"></i>
+                        가입
                     </button>
                 </div>
-
             </form>
-
-
         </div>
     </div>
 </div>
