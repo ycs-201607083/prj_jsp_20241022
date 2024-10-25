@@ -1,6 +1,7 @@
 package com.example.jsp_jsp_20241022.mapper;
 
 import com.example.jsp_jsp_20241022.dto.Board;
+import com.example.jsp_jsp_20241022.dto.Member;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -11,10 +12,10 @@ public interface Mapper {
     @Insert("""
             INSERT INTO board
             (title, content, writer)
-            VALUES (#{title}, #{content}, #{writer})
+            VALUES (#{board.title}, #{board.content}, #{member.id})
             """)
-    @Options(useGeneratedKeys = true, keyProperty = "id")
-    int insert(Board board);
+    @Options(useGeneratedKeys = true, keyProperty = "board.id")
+    int insert(Board board, Member member);
 
     @Select("""
                 SELECT *
