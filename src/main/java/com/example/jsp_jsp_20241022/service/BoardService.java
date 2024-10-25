@@ -68,8 +68,13 @@ public class BoardService {
         return mapper.selectById(id);
     }
 
-    public void remove(int id) {
-        mapper.deleteById(id);
+    public void remove(int id, Member member) {
+        Board board = mapper.selectById(id);
+        if (board.getWriter().equals(member.getId())) {
+            mapper.deleteById(id);
+        } else {
+            throw new RuntimeException("삭제 권한 없음");
+        }
     }
 
     public void update(Board b) {
