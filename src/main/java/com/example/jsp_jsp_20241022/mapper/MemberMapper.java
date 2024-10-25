@@ -36,10 +36,26 @@ public interface MemberMapper {
     int deleteById(String id, String password);
 
     @Update("""
-                        UPDATE member
-                        SET
-                        id=#{id}, nick_name=#{nickName}, password=#{password} description=#{description}
-                        WHERE id = #{id}
+            UPDATE member
+            SET nick_name = #{nickName},
+                description = #{description}
+            WHERE id = #{id}
             """)
-    void updateById(Member m);
+    int update(Member member);
+
+    @Update("""
+            UPDATE member
+            SET password = #{newPassword}
+            WHERE id = #{id}
+              AND password = #{oldPassword}
+            """)
+    int updatePassword(String id, String oldPassword, String newPassword);
+
+    @Select("""
+            SELECT *
+            FROM member
+            WHERE id = #{id}
+              AND password = #{password}
+            """)
+    Member selectByIdAndPassword(String id, String password);
 }

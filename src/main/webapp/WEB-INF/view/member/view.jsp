@@ -22,57 +22,60 @@
 
             <h2 class="my-3">회원 정보</h2>
 
-            <div class="mb-3">
-                <label for="inputId1" class="form-label">
-                    아이디
-                </label>
-                <input value="${member.id}" readonly id="inputId1" name="id" type="text" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="inputPassword1" class="form-label">
-                    암호
-                </label>
-                <input value="${member.password}" readonly id="inputPassword1" name="password" type="text"
-                       class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="inputNickName1" class="form-label">
-                    별명
-                </label>
-                <input value="${member.nickName}" readonly id="inputNickName1" name="nickName" type="text"
-                       class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="textareaDescription1" class="form-label">
-                    자기소개
-                </label>
-                <textarea readonly type="text"
-                          class="form-control"
-                          id="textareaDescription1"
-                          rows="10"
-                          name="description"
-                >${member.description}</textarea>
-            </div>
-            <div class="mb-3">
-                <label for="inputInserted1" class="form-label">
-                    가입일시
-                </label>
-                <input class="form-control" id="inputInserted1" type="datetime-local" value="${member.inserted}"
-                       readonly>
-            </div>
+            <form action="member/edit" method="post">
+                <div class="mb-3">
+                    <label for="inputId1" class="form-label">
+                        아이디
+                    </label>
+                    <input value="${member.id}" readonly id="inputId1" name="id" type="text" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="inputPassword1" class="form-label">
+                        암호
+                    </label>
+                    <div class="input-group">
+                        <input value="${member.password}" readonly id="inputPassword1" name="password" type="text"
+                               class="form-control">
+                        <a href="/member/edit-password?id=${member.id}" class="btn btn-outline-secondary">
+                            변경
+                        </a>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="inputNickName1" class="form-label">
+                        별명
+                    </label>
+                    <input value="${member.nickName}" readonly id="inputNickName1" name="nickName" type="text"
+                           class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="textareaDescription1" class="form-label">
+                        자기소개
+                    </label>
+                    <textarea readonly type="text"
+                              class="form-control"
+                              id="textareaDescription1"
+                              rows="10"
+                              name="description"
+                    >${member.description}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="inputInserted1" class="form-label">
+                        가입일시
+                    </label>
+                    <input class="form-control" id="inputInserted1" type="datetime-local" value="${member.inserted}"
+                           readonly>
+                </div>
 
-            <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal1">
-                <i class="fa-solid fa-trash-can"></i>
-                탈퇴
-            </button>
-            <a class="btn btn-outline-primary" href="/board/edit?id=${board.id}">
-                <i class="fa-solid fa-pen-to-square"></i>
-                수정
-            </a>
-
-            <%-- <form id="deleteForm1" class="d-none" action="/member/delete" method="post">
-                 <input type="hidden" name="id" value="${member.id}">
-             </form>--%>
+                <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal1">
+                    <i class="fa-solid fa-trash-can"></i>
+                    탈퇴
+                </button>
+                <a class="btn btn-outline-primary" href="/member/edit?id=${member.id}">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    수정
+                </a>
+            </form>
         </div>
     </div>
 </div>
