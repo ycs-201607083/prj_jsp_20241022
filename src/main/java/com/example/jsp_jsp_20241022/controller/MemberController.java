@@ -16,11 +16,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Map;
 
 @Controller
-@RequiredArgsConstructor
 @RequestMapping("member")
+@RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService service;
+
 
     @GetMapping("signup")
     public void signup() {
@@ -29,11 +30,11 @@ public class MemberController {
 
     @PostMapping("signup")
     public String signupProcess(Member member, RedirectAttributes rttr) {
+
         service.addMember(member);
-        rttr.addFlashAttribute("m",
-                Map.of(
-                        "type", "success",
-                        "text", "회원가입 되었습니다."));
+
+        rttr.addFlashAttribute("message", Map.of("type", "success",
+                "text", "회원가입되었습니다."));
 
         return "redirect:/board/list";
     }
@@ -52,51 +53,96 @@ public class MemberController {
             model.addAttribute("memberList", service.list());
             return null;
         }
-
     }
 
     @GetMapping("view")
-    public void info(String id, Model model) {
+    public void info(
+            String id,
+            Model model,
+            @SessionAttribute("loggedInMember") Member loggedMember) {
         Member member = service.info(id);
         model.addAttribute("member", member);
     }
 
     @PostMapping("delete")
-    public String deleteBoard(String id, String password, RedirectAttributes rttr) {
+    public String delete(String id,
+                         String password,
+                         HttpSession session,
+                         RedirectAttributes rttr,
+                         @SessionAttribute("loggedInMember") Member member) {
 
+        if (service.hasAccess(id, member)) {
+            if (service.remove(id, password)) {
+                // 탈퇴 성공
+                rttr.addFlashAttribute("message", Map.of("type", "dark",
+                        "text", "회원 탈퇴하였습니다."));
 
-        if (service.remove(id, password)) {
-            //탈퇴성공
-            rttr.addFlashAttribute("message", Map.of("type", "dark", "text", "회원 목록에서 탈퇴 되었습니다."));
-            return "redirect:/member/signup";
+                session.invalidate();
+                return "redirect:/member/signup";
+            } else {
+                // 탈퇴 실패
+                rttr.addFlashAttribute("message", Map.of("type", "danger",
+                        "text", "패스워드가 일치하지 않습니다."));
+                rttr.addAttribute("id", id);
+
+                return "redirect:/member/view";
+            }
         } else {
-            //탈퇴실패
-            rttr.addFlashAttribute("message", Map.of("type", "danger", "text", "패스워드가 일치하지 않습니다."));
-            rttr.addAttribute("id", id);
-            return "redirect:/member/view";
+            rttr.addFlashAttribute("message", Map.of("type", "danger",
+                    "text", "권한이 없습니다."));
+
+            session.invalidate();
+            return "redirect:/member/login";
         }
     }
 
     @GetMapping("edit")
-    public void edit(String id, Model model) {
-        model.addAttribute("member", service.info(id));
+    public String edit(String id, Model model,
+                       RedirectAttributes rttr,
+                       @SessionAttribute("loggedInMember") Member member) {
+
+        if (service.hasAccess(id, member)) {
+            model.addAttribute("member", service.info(id));
+            return null;
+        } else {
+            rttr.addFlashAttribute("message", Map.of("type", "danger",
+                    "text", "권한이 없습니다."));
+            return "redirect:/member/login";
+        }
     }
 
     @PostMapping("edit")
-    public String editProcess(Member member, RedirectAttributes rttr) {
-        try {
-            service.update(member);
-            rttr.addFlashAttribute("message", Map.of("type", "success", "text", member.getId() + "번 게시물이 수정 되었습니다."));
-        } catch (DuplicateKeyException e) {
-            rttr.addFlashAttribute("message", Map.of("type", "danger", "text", member.getNickName() + "은 이미 사용중인 닉네임 입니다."));
-            System.out.println("별명 중복!");
+    public String editProcess(Member member, RedirectAttributes rttr,
+                              @SessionAttribute("loggedInMember") Member loggedInMember) {
+        if (service.hasAccess(member.getId(), loggedInMember)) {
+            try {
+                service.update(member);
+                rttr.addFlashAttribute("message", Map.of("type", "success",
+                        "text", "회원정보가 수정되었습니다."));
+
+            } catch (DuplicateKeyException e) {
+                rttr.addFlashAttribute("message", Map.of("type", "danger",
+                        "text", member.getNickName() + "은 이미 사용중인 별명입니다."));
+
+                rttr.addAttribute("id", member.getId());
+                return "redirect:/member/edit";
+            }
+
+            rttr.addAttribute("id", member.getId());
+            return "redirect:/member/view";
+        } else {
+
+            rttr.addFlashAttribute("message", Map.of("type", "danger",
+                    "text", "권한이 없습니다."));
+            return "redirect:/member/login";
         }
-        rttr.addAttribute("id", member.getId());
-        return "redirect:/member/view";
     }
 
     @GetMapping("edit-password")
-    public String editPassword(String id, Model model) {
+    public String editPassword(
+            String id,
+            Model model) {
+
         model.addAttribute("id", id);
 
         return "/member/editPassword";
@@ -106,31 +152,41 @@ public class MemberController {
     public String editPasswordProcess(String id,
                                       String oldPassword,
                                       String newPassword,
-                                      RedirectAttributes rttr) {
-        if (service.updatePassword(id, oldPassword, newPassword)) {
-            rttr.addFlashAttribute("message", Map.of("type", "success",
-                    "text", "암호가 변경되었습니다."));
-            rttr.addAttribute("id", id);
-            return "redirect:/member/view";
+                                      RedirectAttributes rttr,
+                                      HttpSession session,
+                                      @SessionAttribute("loggedInMember") Member member) {
+
+        if (service.hasAccess(id, member)) {
+            if (service.updatePassword(id, oldPassword, newPassword)) {
+                rttr.addFlashAttribute("message", Map.of("type", "success",
+                        "text", "암호가 변경되었습니다."));
+                rttr.addAttribute("id", id);
+                return "redirect:/member/view";
+            } else {
+                rttr.addFlashAttribute("message", Map.of("type", "warning",
+                        "text", "암호가 변경되지 않았습니다."));
+                rttr.addAttribute("id", id);
+                return "redirect:/member/edit-password";
+            }
         } else {
             rttr.addFlashAttribute("message", Map.of("type", "warning",
-                    "text", "암호가 변경되지 않았습니다."));
-            rttr.addAttribute("id", id);
-            return "redirect:/member/edit-password";
+                    "text", "타 아이디의 비밀번호를 변경할 수 없습니다."));
+            session.invalidate();
+            return "redirect:/member/login";
         }
+
+
     }
 
     @GetMapping("login")
-    public void login(Model model) {
+    public void login() {
 
     }
 
     @PostMapping("login")
-    public String loginProcess(
-            String id,
-            String password,
-            RedirectAttributes rttr,
-            HttpSession session) {
+    public String loginProcess(String id, String password,
+                               RedirectAttributes rttr,
+                               HttpSession session) {
         Member member = service.get(id, password);
 
         if (member == null) {
@@ -143,9 +199,9 @@ public class MemberController {
             rttr.addFlashAttribute("message", Map.of("type", "success"
                     , "text", "로그인 되었습니다."));
             session.setAttribute("loggedInMember", member);
-            System.out.println("session = " + session);
             return "redirect:/board/list";
         }
+
     }
 
     @RequestMapping("logout")
@@ -157,4 +213,6 @@ public class MemberController {
 
         return "redirect:/member/login";
     }
+
+
 }

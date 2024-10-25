@@ -31,12 +31,13 @@ public interface Mapper {
     int deleteById(int id);
 
     @Update("""
-                        UPDATE board
-                        SET
-                        title=#{title}, content=#{content}, writer=#{writer}
-                        WHERE id = #{id}
+            UPDATE board
+            SET title=#{title},
+                content=#{content}
+            WHERE   
+                id = #{id}
             """)
-    int editById(Board b);
+    int update(Board board);
 
     @Select("""
             SELECT *

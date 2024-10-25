@@ -14,7 +14,7 @@
 <body>
 <c:import url="/WEB-INF/fragment/navbar.jsp"/>
 
-<%--수정/삭제 권한--%>
+<%-- 수정/삭제 권한 --%>
 <c:set value="${sessionScope.loggedInMember.id == board.writer}" var="hasAccess"/>
 
 <div class="container">
@@ -47,16 +47,17 @@
                 </label>
                 <input class="form-control" type="datetime-local" value="${board.inserted}" readonly>
             </div>
+
             <c:if test="${hasAccess}">
                 <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal1">
                     <i class="fa-solid fa-trash-can"></i>
                     삭제
                 </button>
+                <a class="btn btn-outline-primary" href="/board/edit?id=${board.id}">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    수정
+                </a>
             </c:if>
-            <a class="btn btn-outline-primary" href="/board/edit?id=${board.id}">
-                <i class="fa-solid fa-pen-to-square"></i>
-                수정
-            </a>
 
             <c:if test="${hasAccess}">
                 <form id="deleteForm1" class="d-none" action="/board/delete" method="post">

@@ -65,10 +65,12 @@
                         </li>
                     </c:if>
 
-                    <li><%--TODO: 지우거나 업데이트 할것--%>
-                        로그인 : ${sessionScope.loggedInMember.id}
+                    <li class="nav-item">
+                        <a href="/member/view?id=${sessionScope.loggedInMember.id}" class="nav-link">
+                            <i class="fa-regular fa-address-card"></i>
+                            ${sessionScope.loggedInMember.id}
+                        </a>
                     </li>
-
                 </ul>
 
             </div>

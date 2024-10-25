@@ -34,12 +34,7 @@
                     <textarea id="textareaContent1" class="form-control" name="content"
                               rows="10">${board.content}</textarea>
                 </div>
-                <div class="mb-3">
-                    <label for="inputWriter1" class="form-label">
-                        작성자
-                    </label>
-                    <input id="inputWriter1" class="form-control" type="text" name="writer" value="${board.writer}">
-                </div>
+
                 <div class="mb-3">
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                             data-bs-target="#updateConfirmModal1">
@@ -48,34 +43,35 @@
                     </button>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
-<form id="editForm1" class="d-none" action="/board/edit" method="post">
-    <input type="hidden" name="id" value="${board.id}">
-</form>
-
 
 <!-- Modal -->
-<div class="modal fade" id="updateConfirmModal1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="updateConfirmModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">수정 확인</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                    저장 확인
+                </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                ${board.id}번 게시글을 수정 하시겠습니까?
+                ${board.id}번 게시물을 저장하시겠습니까?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                <button type="submit" form="updateForm1" class="btn btn-primary">수정</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    닫기
+                </button>
+                <button form="updateForm1" class="btn btn-primary">
+                    저장
+                </button>
             </div>
         </div>
     </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
         crossorigin="anonymous"></script>

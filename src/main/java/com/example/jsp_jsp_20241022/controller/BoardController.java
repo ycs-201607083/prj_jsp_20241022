@@ -82,19 +82,42 @@ public class BoardController {
     }
 
     @GetMapping("edit")
-    public void editBoard(Integer id, Model model) {
+    public String editBoard(Integer id,
+                            Model model,
+                            RedirectAttributes rttr,
+                            @SessionAttribute("loggedInMember") Member member) {
+
         Board board = service.get(id);
-        model.addAttribute("board", board);
+        if (board.getWriter().equals(member.getId())) {
+            model.addAttribute("board", board);
+            return null;
+        } else {
+            rttr.addFlashAttribute("message",
+                    Map.of("type", "danger",
+                            "text", "게시물 수정권한이 없습니다."));
+
+            return "redirect:/member/login";
+        }
     }
 
     @PostMapping("edit")
-    public String editBoard(Board board, RedirectAttributes rttr) {
-        service.update(board);
+    public String editBoard(Board board,
+                            RedirectAttributes rttr,
+                            @SessionAttribute("loggedInMember") Member member) {
 
-        rttr.addFlashAttribute("message", Map.of("type", "success", "text", board.getId() + "번 게시물이 수정 되었습니다."));
+        try {
+            service.update(board, member);
+
+            rttr.addFlashAttribute("message",
+                    Map.of("type", "success",
+                            "text", board.getId() + "번 게시물이 수정되었습니다."));
+        } catch (RuntimeException e) {
+            //
+            rttr.addFlashAttribute("message",
+                    Map.of("type", "danger",
+                            "text", board.getId() + "번 게시물 수정중 문제가 발생되었습니다."));
+        }
         rttr.addAttribute("id", board.getId());
         return "redirect:/board/view";
     }
-
-
 }
