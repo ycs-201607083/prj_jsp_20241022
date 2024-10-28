@@ -63,6 +63,30 @@
     </div>
 </div>
 
+<%-- 검색 form --%>
+<%-- TODO : css 다듬기 --%>
+<%--div.container>div.row>div.col-2+div.col-4+div.col-1--%>
+<div class="container">
+    <form class="row justify-content-center">
+        <div class="col-2 col-lg-1">
+            <select name="searchTarget" id="select1" class="form-select">
+                <option value="all">전체</option>
+                <option value="title" ${param.searchTarget == 'title' ? 'selected' : ''}>제목</option>
+                <option value="content" ${param.searchTarget == 'content' ? 'selected' : ''}>본문</option>
+                <option value="writer" ${param.searchTarget == 'writer' ? 'selected' : ''}>작성자</option>
+            </select>
+        </div>
+        <div class="col-4 col-lg-2">
+            <input type="text" class="form-control" name="keyword" value="${param.keyword}">
+        </div>
+        <div class="col-1">
+            <button class="btn btn-outline-primary h-100">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+    </form>
+</div>
+
 <%-- bootstrap pagination --%>
 <nav class="mt-4">
     <ul class="pagination justify-content-center">
@@ -76,8 +100,14 @@
         <c:forEach begin="${pageInfo.leftPageNumber}"
                    end="${pageInfo.rightPageNumber}"
                    var="pageNumber">
+            <c:url value="" var="pageLink">
+                <c:param name="page" value="${pageNumber}"></c:param>
+                <c:param name="searchParget" value="${param.searchTarget}"/>
+                <c:param name="keyword" value="${param.keyword}"/>
+
+            </c:url>
             <li class="page-item ${pageInfo.currentPageNumber == pageNumber ? 'active' : ''}">
-                <a href="/board/list?page=${pageNumber}" class="page-link">${pageNumber}</a>
+                <a href="${pageLink}" class="page-link">${pageNumber}</a>
             </li>
         </c:forEach>
         <c:if test="${pageInfo.hasNextPage}">
