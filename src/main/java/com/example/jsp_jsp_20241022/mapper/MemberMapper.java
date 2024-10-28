@@ -33,7 +33,7 @@ public interface MemberMapper {
                 DELETE FROM member
                 WHERE id = #{id} AND password = #{password}
             """)
-    int deleteById(String id, String password);
+    int deleteByIdAndPassword(String id, String password);
 
     @Update("""
             UPDATE member
@@ -65,4 +65,10 @@ public interface MemberMapper {
             WHERE id = #{id}
             """)
     List<String> selectAuthById(String id);
+
+    @Delete("""
+                DELETE FROM board
+                WHERE writer = #{memberId}
+            """)
+    int deleteByMemberId(String memberId);
 }

@@ -28,7 +28,13 @@ public class MemberService {
     }
 
     public boolean remove(String id, String password) {
-        int cnt = mapper.deleteById(id, password);
+        //게시물(member) 먼저 삭제 후 회원(member) 삭제
+        int cnt = 0;
+        Member member = mapper.selectById(id);
+        if (member.getPassword().equals(password)) {
+            mapper.deleteByMemberId(id);
+            cnt = mapper.deleteByIdAndPassword(id, password);
+        }
         return cnt == 1;
     }
 

@@ -9,6 +9,7 @@ import java.util.List;
 @org.apache.ibatis.annotations.Mapper
 public interface Mapper {
 
+
     @Insert("""
             INSERT INTO board
             (title, content, writer)
@@ -18,17 +19,29 @@ public interface Mapper {
     int insert(Board board, Member member);
 
     @Select("""
-                SELECT *
-                FROM board
-                WHERE id = #{id}
+            SELECT * FROM board
+            ORDER BY id DESC
             """)
-    Board selectById(int id);
+    List<Board> selectAll();
+
+    @Select("""
+            SELECT b.id,
+                   b.title,
+                   b.content,
+                   b.inserted,
+                   b.writer,
+                   m.nick_name writerNickName
+            FROM board b JOIN member m
+                    ON b.writer = m.id
+            WHERE b.id = #{id}
+            """)
+    Board selectById(Integer id);
 
     @Delete("""
             DELETE FROM board
             WHERE id = #{id}
             """)
-    int deleteById(int id);
+    int deleteById(Integer id);
 
     @Update("""
             UPDATE board
@@ -40,22 +53,13 @@ public interface Mapper {
     int update(Board board);
 
     @Select("""
-            SELECT *
-            FROM board
-            ORDER BY id DESC
-            """)
-    List<Board> selectAll();
-
-    @Select("""
-                SELECT COUNT(id)
-                FROM board
-            """)
-    Integer countAll();
-
-    @Select("""
             <script>
-                SELECT *
-                FROM board
+                SELECT b.id,
+                       b.title,
+                       b.inserted,
+                       m.nick_name writerNickName
+                FROM board b JOIN member m
+                    ON b.writer = m.id
                 <trim prefix="WHERE" prefixOverrides="OR">
                     <if test="searchTarget == 'all' or searchTarget == 'title'">
                         title LIKE CONCAT('%', #{keyword}, '%')
@@ -64,12 +68,32 @@ public interface Mapper {
                         OR content LIKE CONCAT('%', #{keyword}, '%')
                     </if>
                     <if test="searchTarget == 'all' or searchTarget == 'writer'">
-                        OR writer LIKE CONCAT('%', #{keyword}, '%')
+                        OR m.nick_name LIKE CONCAT('%', #{keyword}, '%')
                     </if>
                 </trim>
-                ORDER BY id DESC
+                ORDER BY b.id DESC
                 LIMIT #{offset}, 10
             </script>
             """)
     List<Board> selectAllPaging(Integer offset, String searchTarget, String keyword);
+
+    @Select("""
+            <script>
+                SELECT COUNT(b.id) 
+                FROM board b JOIN member m
+                    ON b.writer = m.id
+                <trim prefix="WHERE" prefixOverrides="OR">
+                    <if test="searchTarget == 'all' or searchTarget == 'title'">
+                        title LIKE CONCAT('%', #{keyword}, '%')
+                    </if>
+                    <if test="searchTarget == 'all' or searchTarget == 'content'">
+                        OR content LIKE CONCAT('%', #{keyword}, '%')
+                    </if>
+                    <if test="searchTarget == 'all' or searchTarget == 'writer'">
+                        OR m.nick_name LIKE CONCAT('%', #{keyword}, '%')
+                    </if>
+                </trim>
+            </script>
+            """)
+    Integer countAll(String searchTarget, String keyword);
 }

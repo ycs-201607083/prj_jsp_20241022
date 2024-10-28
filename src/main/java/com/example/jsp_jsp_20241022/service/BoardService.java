@@ -21,7 +21,6 @@ public class BoardService {
         mapper.insert(board, member);
     }
 
-
     public Map<String, Object> list(Integer page, String searchTarget, String keyword) {
         // 한 페이지에 10개
 
@@ -34,17 +33,17 @@ public class BoardService {
         Map<String, Object> map = new HashMap<>();
 
         // 페이지 관련 정보들
-        Integer countAll = mapper.countAll();
+        Integer countAll = mapper.countAll(searchTarget, keyword);
         Integer lastPageNumber = (countAll - 1) / 10 + 1; // 마지막 페이지 번호
         Integer rightPageNumber = ((page - 1) / 10 + 1) * 10; // 현재페이지 기준 오른쪽 끝 페이지 번호
         Integer leftPageNumber = rightPageNumber - 9;// 현재페이지 기준 왼쪽 끝 페이지 번호
-        Integer nextPageNumber = rightPageNumber + 1;     //다음 버튼 클릭 시 이동하는 페이지
-        Integer prevPageNumber = leftPageNumber - 1;        //이전 페이지 버튼 클릭 시 이동하는 페이지
+        Integer nextPageNumber = rightPageNumber + 1; // 다음 버튼 클릭시 이동하는 페이지
+        Integer prevPageNumber = leftPageNumber - 1; // 이전 버튼 클릭시 이동하는 페이지
 
-        Boolean hasNextPage = nextPageNumber < lastPageNumber;      //다음 버튼 유무
-        Boolean hasPrevPage = prevPageNumber > 0;       //이전 버튼 유무
+        Boolean hasNextPage = nextPageNumber < lastPageNumber; // 다음 버튼 유무
+        Boolean hasPrevPage = prevPageNumber > 0; // 이전 버튼 유무
 
-        //오른쪽 끝페이지는 마지막 페이지 보다 클 수 없음
+        // 오른쪽 끝페이지는 마지막 페이지 보다 클 수 없음
         rightPageNumber = Math.min(rightPageNumber, lastPageNumber);
 
         Map<String, Object> pageInfo = new HashMap<>();
@@ -64,25 +63,29 @@ public class BoardService {
         return map;
     }
 
-    public Board get(int id) {
-        return mapper.selectById(id);
+    public Board get(Integer id) {
+        Board board = mapper.selectById(id);
+        return board;
     }
 
-    public void remove(int id, Member member) {
+    public void remove(Integer id, Member member) {
         Board board = mapper.selectById(id);
         if (board.getWriter().equals(member.getId())) {
             mapper.deleteById(id);
         } else {
-            throw new RuntimeException("삭제 권한 없음");
+            throw new RuntimeException("삭제 권한이 없습니다.");
         }
+
     }
 
-    public void update(Board b, Member m) {
-        Board board1 = mapper.selectById(b.getId());
-        if (board1.getWriter().equals(m.getId())) {
-            mapper.update(b);
+    public void update(Board board, Member member) {
+        Board board1 = mapper.selectById(board.getId());
+        if (board1.getWriter().equals(member.getId())) {
+            mapper.update(board);
         } else {
             throw new RuntimeException("수정 권한이 없습니다.");
         }
+
+
     }
 }

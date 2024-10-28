@@ -2,6 +2,7 @@ package com.example.jsp_jsp_20241022.controller;
 
 import com.example.jsp_jsp_20241022.dto.Board;
 import com.example.jsp_jsp_20241022.dto.Member;
+import com.example.jsp_jsp_20241022.mapper.MemberMapper;
 import com.example.jsp_jsp_20241022.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import java.util.Map;
 public class BoardController {
 
     private final BoardService service;
+    private final MemberMapper memberMapper;
 
 
     // 게시물 CRUD
@@ -62,9 +64,10 @@ public class BoardController {
     }
 
     @GetMapping("view")
-    public void viewBoard(Integer id, Model model) {
+    public Board viewBoard(Integer id, Model model) {
         Board board = service.get(id);
         model.addAttribute("board", board);
+        return board;
     }
 
     @PostMapping("delete")
